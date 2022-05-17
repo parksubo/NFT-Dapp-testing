@@ -1,15 +1,53 @@
 import React, { FC, MouseEvent, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
+import App from '../../App';
 
 const Header: FC = ({ children }) => {
   const [clicked, setClicked] = useState([false, false, false, false]);
-
+ 
   const changeButtonColor = (num: number) => {
     let newClicked = [false, false, false, false];
     newClicked[num] = true;
     setClicked(newClicked);
   };
+
+  // 메타마스크에서 가져올 정보를 담기 위한 useState 
+  const [account, setAccount] = useState<string>("");
+
+  // 메타마스크를 통해서 계정을 가져오는 함수
+  const getAccount = async () => { 
+    try {
+      // 메타마스크 계정 주소 설정
+      if(window.ethereum) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setAccount(accounts[0]);
+      }
+      // 메타마스크가 설치되있지 않으면 실행되지 않음
+      else {
+        alert("Install Metamask!");
+      }
+    } 
+    catch(error) {
+      console.error(error);
+    }
+  }
+  const onClickLogin = async() => {
+    try {
+      if(!account) {
+        getAccount();
+      }
+      else {
+        console.log("Already Login Done!")
+      }
+    }
+    catch(error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -52,8 +90,9 @@ const Header: FC = ({ children }) => {
           >
             Game
           </button>
-        </Link>
-        <button className={`${styles.headerBtn} ${styles.loginBtn}`}>
+        </Link>  
+        <button className={`${styles.headerBtn} ${styles.loginBtn}`}
+        onClick={onClickLogin}>
           Login
         </button>
       </div>
