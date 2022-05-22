@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 // import 'hardhat/console.sol';
+
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import './GeneScience.sol';
@@ -14,6 +15,7 @@ contract SlimeBase is ERC721, GeneScience {
         string genes;
         uint256 fatherTokenId;
         uint256 motherTokenId;
+        string slimeType;
         uint256 health;
         uint256 attack;
     }
@@ -39,15 +41,17 @@ contract SlimeBase is ERC721, GeneScience {
         baseUri = '';
     }
     
-
+    /*
     // 배포자 설정
     function setDeployer(address _deployer) internal {
         deployer = _deployer;
     }
+    */
     // 배포자의 잔액 확인 (external로 다큰 컨트랙트나 트랜잭션을 통해서만 호출)
-    function getContractBalance() external view onlyDeployer returns (uint256) {
+    function getContractBalance() external view returns (uint256) { //onlyDeployer returns (uint256) {
         return address(this).balance;
     }
+    /*
     // baseURI Get
     function _baseURI() internal view virtual override returns (string memory) {
         return baseUri;
@@ -56,7 +60,8 @@ contract SlimeBase is ERC721, GeneScience {
     function setBaseUri(string memory _baseUri) external onlyDeployer {
         baseUri = _baseUri;
     }
-
+    */
+    
     // 
     function addOwnerShip (address _owner, uint256 tokenId) internal {
         require(_owner != address(0x0), "Owner must a valid address");
@@ -74,6 +79,7 @@ contract SlimeBase is ERC721, GeneScience {
         string memory _genes,
         uint256 _fatherTokenId,
         uint256 _motherTokenId,
+        string memory _slimeType,
         uint256 _health,
         uint256 _attack,
         address _owner
@@ -87,6 +93,7 @@ contract SlimeBase is ERC721, GeneScience {
             genes: _genes,
             fatherTokenId: _fatherTokenId,
             motherTokenId: _motherTokenId,
+            slimeType: _slimeType,
             health: _health,
             attack: _attack
         });
@@ -107,14 +114,15 @@ contract SlimeBase is ERC721, GeneScience {
     }
 
     // 임시 슬라임 민팅 함수
-    function mintGenesisSlime(string memory _genes) external onlyDeployer {
-        createSlime(_genes,0, 0, 100, 10, msg.sender);
+    function mintGenesisSlime(string memory _genes) external {// external onlyDeployer {
+        createSlime(_genes, 0, 0, "green", 100, 10, msg.sender);
     }
-
+    /*
     // 배포자만 사용가능하게
     modifier onlyDeployer() {
         require(deployer != address(0x0), 'Deployer must set first');
         require(msg.sender == deployer, 'Must Deployer');
         _;
     }
+    */
 }
